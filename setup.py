@@ -6,6 +6,5 @@ setup(name='Authda',
       test_suite='Authda.tests',
       install_requires=['flask',
                         'flask-sqlalchemy',
-                        'flask-testing',
-                        'psycopg2'])
+                        'flask-testing'])
 
