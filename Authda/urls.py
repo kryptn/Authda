@@ -1,5 +1,6 @@
-from Authda.views import index
+from Authda.views import index, WebhookTest
 
-routes = [{'rule': '/', 'view_func': index},]
+routes = [{'rule': '/', 'view_func': index},
+          {'rule': '/webhook/', 'view_func': WebhookTest.as_view('webhook')}]
 
 
