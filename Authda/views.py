@@ -3,16 +3,7 @@ from flask.views import MethodView
 
 import requests
 
-from Authda.helpers import ApiResult
-from Authda.slack import AuthBot
-
-
-bot = AuthBot
-
-
-bot_name = current_app.config.get('SLACK_BOT_NAME', None)
-webhook_uri = current_app.config.get('SLACK_WEBHOOK_URI', None)
-
+from Authda.helpers import ApiResult, context_webhook
 
 
 def index():
@@ -21,21 +12,26 @@ def index():
 
 class WebhookTest(MethodView):
     def post(self):
-#        bot_name = current_app.config.get('SLACK_BOT_NAME', None)
-#        webhook_uri = current_app.config.get('SLACK_WEBHOOK_URI', None)
 
-        text = request.form.get('text', 'default yo')
-        name = request.form.get('bot_name', None)
+        default = {'token': '',
+                   'team_id': '',
+                   'team_domain': '',
+                   'channel_id': '',
+                   'channel_name': '',
+                   'timestamp': '',
+                   'user_id': '',
+                   'user_name': '',
+                   'bot_id': '',
+                   'bot_name': '',
+                   'text': '',
+                   'trigger_word': ''}
 
-        if name == bot_name:
-            return ApiResult('nothing lol')
+        received = {k: request.form.get(k, v) for k, v in default.items()}
 
-        payload = {'text': 'echo '+json.dumps(request.form),
-                   'channel': '#general',
-                   'username': 'test-bot',
-                   'icon_emoji': ':ghost:'}
-        result = requests.post(webhook_uri, json=payload)
+        with context_webhook() as api:
+            result = api.handle(received)
 
-        return ApiResult(result.content)
+        return ApiResult('Success')
+        
 
 

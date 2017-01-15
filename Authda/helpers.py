@@ -1,5 +1,8 @@
-from flask import Flask, json, Response
+from contextlib import contextmanager
 
+from flask import Flask, json, Response, current_app
+
+from Authda.slack import AuthBot
 
 class ApiFlask(Flask):
     def make_response(self, rv):
@@ -29,6 +32,16 @@ class ApiException(Exception):
         return ApiResult({'message': self.message},
                          status=self.status)
 
+@contextmanager
+def context_webhook():
+    auth = {'name': current_app.config.get('SLACK_BOT_NAME'),
+            'icon': current_app.config.get('SLACK_BOT_ICON'),
+            'channel': current_app.config.get('SLACK_BOT_CHANNEL'),
+            'endpoint': current_app.config.get('SLACK_WEBHOOK_URI'),
+            'token': current_app.config.get('SLACK_WEBHOOK_TOKEN')}
+
+    api = AuthBot(**auth)
+    yield api
 
 def create_app(settings=None):
     app = ApiFlask(__name__)
