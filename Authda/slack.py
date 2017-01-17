@@ -3,7 +3,12 @@ import requests
 
 class AuthBot:
 
-    handlers = {'echo': lambda d: d['text']}
+    handlers = {'echo': lambda d: d['text'],
+                'second': echo}
+
+    def echo(data):
+        return data['text']
+
 
     def __init__(self, endpoint, token, name='auth-bot', icon=':ghost:', channel='#general'):
         self.endpoint = endpoint
