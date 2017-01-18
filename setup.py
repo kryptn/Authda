@@ -7,5 +7,5 @@ setup(name='Authda',
       install_requires=['flask',
                         'flask-sqlalchemy',
                         'flask-testing',
-                        'requests'])
+                        'slacker'])
 
