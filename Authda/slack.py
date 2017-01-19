@@ -6,6 +6,7 @@ from slacker import BaseAPI, Users, Slacker
 class Admin(BaseAPI):
     def invite(self, email, channels=None, first_name=None, last_name=None, resend=True):
         return self.post('users.admin.invite', params={
+            'email': email,
             'channels': channels,
             'first_name': first_name,
             'last_name': last_name,
