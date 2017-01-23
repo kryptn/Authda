@@ -1,5 +1,4 @@
 import requests
-
 from slacker import BaseAPI, Users, Slacker
 
 
@@ -12,6 +11,7 @@ class Admin(BaseAPI):
             'last_name': last_name,
             'resend': resend})
 
+
 class UsersAdmin(Users):
     def __init__(self, *args, **kwargs):
         super(UsersAdmin, self).__init__(*args, **kwargs)
@@ -21,11 +21,11 @@ class UsersAdmin(Users):
     def admin(self):
         return self._admin
 
+
 class AdminSlacker(Slacker):
     def __init__(self, token, url=None, timeout=10):
         super(AdminSlacker, self).__init__(token, incoming_webhook_url=url, timeout=timeout)
         self.users = UsersAdmin(token=token, timeout=timeout)
-
 
 class AuthBot:
 
@@ -63,4 +63,5 @@ class AuthBot:
 
 
 
+    
 

@@ -2,7 +2,7 @@ from contextlib import contextmanager
 
 from flask import Flask, json, Response, current_app
 
-from Authda.slack import AuthBot
+from Authda.slack import AuthBot, AdminSlacker
 
 class ApiFlask(Flask):
     def make_response(self, rv):
@@ -44,6 +44,15 @@ def context_webhook(*args, **kwargs):
 
     api = AuthBot(**kwargs)
     yield api
+
+@contextmanager
+def slack_context():
+    token = current_app.config.get('DUNGARMATIC_TOKEN', None)
+    if not token:
+        raise ApiException('Missing Config: `DUNGARMATIC_TOKEN`')
+
+    slack = AdminSlacker(token)
+    yield slack
 
 def create_app(settings=None):
     app = ApiFlask(__name__)

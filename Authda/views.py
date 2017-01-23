@@ -1,13 +1,14 @@
-from flask import Flask, request, json, current_app, redirect, url_for
+from flask import Flask, request, json, current_app, redirect, url_for, render_template
 from flask.views import MethodView
 
 import requests
 
-from Authda.helpers import ApiResult, context_webhook
+from Authda.helpers import ApiResult, ApiException, context_webhook, slack_context
+from Authda.models import Invite
 
 
 def index():
-    return ''
+    return render_template('index.html')
 
 
 class OAuth(MethodView):
@@ -29,6 +30,51 @@ class OAuth(MethodView):
             return redirect(token_url.format(client_id, client_secret, code, uri))
         
         return redirect(auth_url.format(client_id, scope, uri))
+
+
+class Invitations(MethodView):
+    def get(self):
+        result = Invite.get_pending()
+        return ApiResult([x.to_json() for x in result])
+
+    def post(self):
+        email = request.form.get('email', None)
+        referrer = request.form.get('referrer', None)
+
+        if email and referrer:
+            result = Invite.get_or_create(email, referrer)
+            with slack_context() as slack:
+                slack.chat.post_message('#bot-test', '{} requested an invite, {} referred'.format(email, referrer))
+            return ApiResult(result.to_json())
+        else:
+            raise ApiException('key `email` or key `referrer` missing')
+
+    def put(self, id):
+        notes = request.form.get('notes', None)
+        action = request.form.get('action', None)
+
+        if not action:
+            raise ApiException('idk something happened')
+
+        result = Invite.query.filter_by(id=id).one_or_none()
+        if not result:
+            raise ApiException('invitation doesnt exist')
+
+        if action == 'invite':
+            tmp = '{} invited'
+            result.invite()
+            with slack_context() as slack:
+                slack.users.admin.invite(result.email)
+                slack.chat.post_message('#bot-test', tmp.format(result.email))
+
+        if action == 'reject':
+            tmp = '{} rejected'
+            result.reject()
+            with slack_context() as slack:
+                slack.chat.post_message('#bot-test', tmp.format(result.email))
+
+        return ApiResult(result.to_json())
+
 
 class WebhookTest(MethodView):
     def post(self):
