@@ -4,12 +4,45 @@ import Bootstrap from 'bootstrap/dist/css/bootstrap.css';
 
 import {Button} from 'react-bootstrap';
 
+class InviteForm extends React.Component {
+    constructor(props){
+        super(props);
+        this.state = {email: '', referrer: ''};
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+    handleChange(key){
+        return function(e){
+            var state = this.state;
+            state[key] = e.target.value;
+            this.setState(state);
+        }
+    }
+    handleSubmit(event){
+        alert(this.state.email + '  :  ' + this.state.referrer);
+        event.preventDefault();
+    }
+    render(){
+        return (
+                <form onSubmit={this.handleSubmit}>
+                <label>
+                email: <input type="text" value={this.state.email} onChange={this.handleChange('email')} />
+                </label>
+                <label>
+                referrer: <input type="text" value={this.state.referrer} onChange={this.handleChange('referrer')} />
+                </label>
+                <input type="submit" value="Submit" />
+                </form>);
+    }
+}
+
 
 class App extends React.Component {
     render () {
-        return <p class="text-center"> Hello things <Button> Words!</Button> </p>;
+        return <p className="text-center"> Hello things <Button> Words!</Button> </p>;
     }
 }
 
 render(<App/>, document.getElementById('app'));
+render(<InviteForm/>, document.getElementById('inviteform'));
 
