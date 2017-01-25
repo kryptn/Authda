@@ -20,7 +20,8 @@ package_json = {
     "bootstrap": "^3.3.7",
     "react": "^15.4.2",
     "react-bootstrap": "^0.30.7",
-    "react-dom": "^15.4.2"
+    "react-dom": "^15.4.2",
+    "whatwg-fetch": "^2.0.2",
   },
   "devDependencies": {
     "babel-core": "^6.22.1",

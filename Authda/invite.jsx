@@ -1,6 +1,7 @@
 import React from 'react';
 import {render} from 'react-dom';
 import Bootstrap from 'bootstrap/dist/css/bootstrap.css';
+import 'whatwg-fetch';
 
 import {Button} from 'react-bootstrap';
 
@@ -11,14 +12,28 @@ class InviteForm extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
     handleChange(prop, event){
-        return function(e){
-            var state = this.state;
-            state[prop] = e.target.value;
-            this.setState(state);
-        }
+
+        const state = this.state;
+        state[prop] = event.target.value;
+        this.setState(state)
+
     }
     handleSubmit(event){
-        alert(this.state.email + '  :  ' + this.state.referrer);
+        const response = fetch('/invite/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: this.state.email,
+                referrer: this.state.referrer,
+            })
+        });
+
+        const data = response.json();
+        alert(data);
+
+        
         event.preventDefault();
     }
     render(){

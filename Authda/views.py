@@ -38,13 +38,15 @@ class Invitations(MethodView):
         return ApiResult([x.to_json() for x in result])
 
     def post(self):
-        email = request.form.get('email', None)
-        referrer = request.form.get('referrer', None)
+        email = request.json.get('email', None)
+        referrer = request.json.get('referrer', None)
 
         if email and referrer:
             result = Invite.get_or_create(email, referrer)
             with slack_context() as slack:
-                slack.chat.post_message('#bot-test', '{} requested an invite, {} referred'.format(email, referrer))
+                slack.chat.post_message('#bot-test',
+                                        '{} requested an invite, {} referred'.format(email, referrer),
+                                        username='Dungarmatic')
             return ApiResult(result.to_json())
         else:
             raise ApiException('key `email` or key `referrer` missing')
@@ -65,13 +67,13 @@ class Invitations(MethodView):
             result.invite()
             with slack_context() as slack:
                 slack.users.admin.invite(result.email)
-                slack.chat.post_message('#bot-test', tmp.format(result.email))
+                slack.chat.post_message('#bot-test', tmp.format(result.email), username='Dungarmatic')
 
         if action == 'reject':
             tmp = '{} rejected'
             result.reject()
             with slack_context() as slack:
-                slack.chat.post_message('#bot-test', tmp.format(result.email))
+                slack.chat.post_message('#bot-test', tmp.format(result.email), username='Dungarmatic')
 
         return ApiResult(result.to_json())
 
