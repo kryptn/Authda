@@ -4,10 +4,15 @@ import Bootstrap from 'bootstrap/dist/css/bootstrap.css';
 import 'whatwg-fetch';
 
 
+import {ButtonToolbar} from 'react-bootstrap';
+import {ButtonGroup} from 'react-bootstrap';
 import {Button} from 'react-bootstrap';
 import {Form} from 'react-bootstrap';
 import {FormGroup} from 'react-bootstrap';
 import {FormControl} from 'react-bootstrap';
+import {ControlLabel} from 'react-bootstrap';
+import {Grid} from 'react-bootstrap';
+import {Row} from 'react-bootstrap';
 import {Col} from 'react-bootstrap';
 
 class InviteForm extends React.Component {
@@ -66,7 +71,7 @@ class InviteForm extends React.Component {
 
                   <FormGroup>
                     <Col smOffset={2} sm={10}>
-                      <Button type="submit">
+                      <Button type="submit" onClick={this.handleSubmit}>
                         Request an Invite
                       </Button>
                     </Col>
@@ -78,13 +83,64 @@ class InviteForm extends React.Component {
 }
 
 
-class App extends React.Component {
-    render () {
+class InviteRow extends React.Component {
+    constructor(props){
+        super(props);
+        this.state = props.obj;
+    }
+    render() {
+        const toRender = (
+            <Row>
+              <Col xs={6} md={4}>{this.state.email}</Col>
+              <Col xs={6} md={4}>{this.state.referrer}</Col>
+              <Col xs={6} md={4}>
+                <ButtonToolbar>
+                  <ButtonGroup>
+                    <Button bsStyle="primary">Invite</Button>
+                    <Button bsStyle="danger">Reject</Button>
+                  </ButtonGroup>
+                </ButtonToolbar>
+              </Col>
+            </Row>
 
-        return <Button  bsStyle="primary" onClick={alert("button!")}>THIS IS A BUTTON</Button>
+        );
+           
+        return toRender;
+    } 
+}
+
+
+class InviteList extends React.Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            invites: [],
+        };
+    }
+
+    componentDidMount() {
+        fetch('/invite/')
+            .then(response => response.json())
+            .then(json => {
+                this.setState({
+                    invites: json,
+                });
+            });
+    }
+
+    render() {
+        const toRender = (
+            <Grid>
+              {this.state.invites.map(invite => <InviteRow obj={invite} key={invite.id} />)}
+            </Grid>
+        )
+        return toRender
     }
 }
 
-render(<App/>, document.getElementById('app'));
+
+
+render(<InviteList/>, document.getElementById('app'));
+
 render(<InviteForm/>, document.getElementById('inviteform'));
 
