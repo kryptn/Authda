@@ -3,7 +3,12 @@ import {render} from 'react-dom';
 import Bootstrap from 'bootstrap/dist/css/bootstrap.css';
 import 'whatwg-fetch';
 
+
 import {Button} from 'react-bootstrap';
+import {Form} from 'react-bootstrap';
+import {FormGroup} from 'react-bootstrap';
+import {FormControl} from 'react-bootstrap';
+import {Col} from 'react-bootstrap';
 
 class InviteForm extends React.Component {
     constructor(props){
@@ -28,32 +33,55 @@ class InviteForm extends React.Component {
                 email: this.state.email,
                 referrer: this.state.referrer,
             })
+        }).then(function(r){
+            return r.json()
         });
 
-        const data = response.json();
+        const data = response;
         alert(data);
 
         
         event.preventDefault();
     }
     render(){
-        return (
-                <form onSubmit={this.handleSubmit}>
-                <label>
-                email: <input type="text" value={this.state.email} onChange={this.handleChange.bind(this, 'email')} />
-                </label>
-                <label>
-                referrer: <input type="text" value={this.state.referrer} onChange={this.handleChange.bind(this, 'referrer')} />
-                </label>
-                <input type="submit" value="Submit" />
-                </form>);
+        const formInstance = (
+                <Form horizontal>
+                  <FormGroup controlId="formHorizontalEmail">
+                    <Col componentClass={ControlLabel} sm={2}>
+                      Email
+                    </Col>
+                    <Col sm={10}>
+                      <FormControl type="email" placeholder="Email" />
+                    </Col>
+                  </FormGroup>
+
+                  <FormGroup controlId="formHorizontalReferrer">
+                    <Col componentClass={ControlLabel} sm={2}>
+                      Referrer
+                    </Col>
+                    <Col sm={10}>
+                      <FormControl type="text" placeholder="Referrer" />
+                    </Col>
+                  </FormGroup>
+
+                  <FormGroup>
+                    <Col smOffset={2} sm={10}>
+                      <Button type="submit">
+                        Request an Invite
+                      </Button>
+                    </Col>
+                  </FormGroup>
+                </Form>
+        )
+        return formInstance;
     }
 }
 
 
 class App extends React.Component {
     render () {
-        return <p className="text-center"> Hello things <Button> Words!</Button> </p>;
+
+        return <Button  bsStyle="primary" onClick={alert("button!")}>THIS IS A BUTTON</Button>
     }
 }
 

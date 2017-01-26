@@ -46,7 +46,7 @@ class Invite(db.Model):
 
     @staticmethod
     def get_or_create(email, referrer):
-        result = Invite.query.filter_by(email=email).all()
+        result = Invite.query.filter_by(email=email).first()
 
         if not result:
             result = Invite(email, referrer)
