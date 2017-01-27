@@ -19,14 +19,14 @@ class InviteForm extends React.Component {
     constructor(props){
         super(props);
         this.state = {email: '', referrer: ''};
+        this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
-    handleChange(prop, event){
-
-        const state = this.state;
-        state[prop] = event.target.value;
-        this.setState(state)
-
+    handleChange(event){
+        const target = event.target;
+        const value = target.value;
+        const name = target.name;
+        this.setState({ [name]: value });
     }
     handleSubmit(event){
         const response = fetch('/invite/', {
@@ -56,7 +56,10 @@ class InviteForm extends React.Component {
                       Email
                     </Col>
                     <Col sm={10}>
-                      <FormControl type="email" placeholder="Email" />
+                      <FormControl name="email"
+                        type="email" 
+                        placeholder="Email"
+                        onChange={this.handleChange}/>
                     </Col>
                   </FormGroup>
 
@@ -65,7 +68,11 @@ class InviteForm extends React.Component {
                       Referrer
                     </Col>
                     <Col sm={10}>
-                      <FormControl type="text" placeholder="Referrer" />
+                      <FormControl
+                        name="referrer"
+                        type="text" 
+                        placeholder="Referrer" 
+                        onChange={this.handleChange}/>
                     </Col>
                   </FormGroup>
 
@@ -96,17 +103,15 @@ class InviteRow extends React.Component {
               <Col xs={6} md={4}>
                 <ButtonToolbar>
                   <ButtonGroup>
-                    <Button bsStyle="primary">Invite</Button>
-                    <Button bsStyle="danger">Reject</Button>
+                    <Button name="invite" bsStyle="primary" onClick={this.props.onClick}>Invite</Button>
+                    <Button name="reject" bsStyle="danger" onClick={this.props.onClick}>Reject</Button> 
                   </ButtonGroup>
                 </ButtonToolbar>
               </Col>
             </Row>
-
         );
-           
         return toRender;
-    } 
+    }
 }
 
 
@@ -117,21 +122,37 @@ class InviteList extends React.Component {
             invites: [],
         };
     }
-
     componentDidMount() {
         fetch('/invite/')
-            .then(response => response.json())
-            .then(json => {
-                this.setState({
-                    invites: json,
-                });
+        .then(response => response.json())
+        .then(json => {
+            this.setState({
+                invites: json,
             });
+        });
     }
+    onClick(event) {
+        const target = event.target;
+        const value = target.value;
+        const name = target.name; 
 
+        console.log(name);
+        console.log(event);
+        //this.setState({ [name]: value });
+
+        /*fetch(this.actionUrl, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ action: action, })
+        }).then(
+            response => response.json()
+        ).then(json => console.log(json));*/
+    
+    }
     render() {
         const toRender = (
             <Grid>
-              {this.state.invites.map(invite => <InviteRow obj={invite} key={invite.id} />)}
+              {this.state.invites.map(invite => <InviteRow obj={invite} key={invite.id} onClick={this.onClick.bind(this)}/>)}
             </Grid>
         )
         return toRender

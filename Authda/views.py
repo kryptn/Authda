@@ -52,8 +52,8 @@ class Invitations(MethodView):
             raise ApiException('key `email` or key `referrer` missing')
 
     def put(self, id):
-        notes = request.form.get('notes', None)
-        action = request.form.get('action', None)
+        notes = request.json.get('notes', None)
+        action = request.json.get('action', None)
 
         if not action:
             raise ApiException('idk something happened')
