@@ -7,6 +7,7 @@ import 'whatwg-fetch';
 import {ButtonToolbar} from 'react-bootstrap';
 import {ButtonGroup} from 'react-bootstrap';
 import {Button} from 'react-bootstrap';
+import {Glyphicon} from 'react-bootstrap';
 import {Form} from 'react-bootstrap';
 import {FormGroup} from 'react-bootstrap';
 import {FormControl} from 'react-bootstrap';
@@ -42,10 +43,6 @@ class InviteForm extends React.Component {
             return r.json()
         });
 
-        const data = response;
-        alert(data);
-
-        
         event.preventDefault();
     }
     render(){
@@ -103,8 +100,12 @@ class InviteRow extends React.Component {
               <Col xs={6} md={4}>
                 <ButtonToolbar>
                   <ButtonGroup>
-                    <Button name="invite" bsStyle="primary" onClick={this.props.onClick}>Invite</Button>
-                    <Button name="reject" bsStyle="danger" onClick={this.props.onClick}>Reject</Button> 
+                    <Button bsStyle="primary" onClick={() => this.props.onClick('invite', this.state.id )}>
+                      <Glyphicon glyph="ok" />
+                    </Button>
+                    <Button bsStyle="danger" onClick={() => this.props.onClick('reject', this.state.id )}>
+                      <Glyphicon glyph="remove" />
+                    </Button> 
                   </ButtonGroup>
                 </ButtonToolbar>
               </Col>
@@ -120,7 +121,9 @@ class InviteList extends React.Component {
         super(props);
         this.state = {
             invites: [],
+            handled: [],
         };
+        this.onClick = this.onClick.bind(this);
     }
     componentDidMount() {
         fetch('/invite/')
@@ -131,28 +134,32 @@ class InviteList extends React.Component {
             });
         });
     }
-    onClick(event) {
-        const target = event.target;
-        const value = target.value;
-        const name = target.name; 
+    onClick(action, id) {
+        console.log(action);
+        console.log(id);
+        const url = '/invite/'+id+'/';
 
-        console.log(name);
-        console.log(event);
-        //this.setState({ [name]: value });
-
-        /*fetch(this.actionUrl, {
+        fetch(url, {
             method: 'PUT',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ action: action, })
         }).then(
             response => response.json()
-        ).then(json => console.log(json));*/
+        ).then(json => {
+            console.log(json);
+        });
+
+        this.setState({
+            invites: this.state.invites.filter(i => i.id != id)
+        });
     
     }
     render() {
         const toRender = (
             <Grid>
-              {this.state.invites.map(invite => <InviteRow obj={invite} key={invite.id} onClick={this.onClick.bind(this)}/>)}
+              {this.state.invites.map(invite => 
+                      <InviteRow obj={invite} key={invite.id} onClick={this.onClick}/>
+              )}
             </Grid>
         )
         return toRender
