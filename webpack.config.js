@@ -1,13 +1,14 @@
 var webpack = require('webpack');
 var path = require('path');
 
-var BUILD_DIR = path.resolve(__dirname, 'Authda/static/js');
+var BUILD_DIR = path.resolve(__dirname, 'Authda/static/assets');
 var APP_DIR = path.resolve(__dirname, 'Authda');
 
 var config = {
     entry: APP_DIR + '/invite.jsx',
     output: {
         path: BUILD_DIR,
+        publicPath: 'static/assets/',
         filename: 'bundle.js'
     },
     module : {

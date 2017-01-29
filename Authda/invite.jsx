@@ -100,11 +100,11 @@ class InviteRow extends React.Component {
               <Col xs={6} md={4}>
                 <ButtonToolbar>
                   <ButtonGroup>
-                    <Button bsStyle="primary" onClick={() => this.props.onClick('invite', this.state.id )}>
-                      <Glyphicon glyph="ok" />
+                    <Button bsStyle="success" onClick={() => this.props.onClick('invite', this.state.id )}>
+                      <Glyphicon glyph="ok" /> Invite
                     </Button>
                     <Button bsStyle="danger" onClick={() => this.props.onClick('reject', this.state.id )}>
-                      <Glyphicon glyph="remove" />
+                      <Glyphicon glyph="trash" /> Reject
                     </Button> 
                   </ButtonGroup>
                 </ButtonToolbar>
