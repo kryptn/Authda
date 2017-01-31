@@ -1,6 +1,11 @@
 # project specific
 *.swp
 *.db
+Authda/static/
+package.json
+
+# node stuffs
+node_modules/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
