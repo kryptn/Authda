@@ -44,6 +44,7 @@ setup(name='Authda',
                         'flask-sqlalchemy',
                         'flask-testing',
                         'slacker',
+                        'bcrypt',
                         'pyjwt',
                         'calmjs'])
 
