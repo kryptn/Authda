@@ -35,9 +35,6 @@ package_json = {
   }
 }
 
-
-
-
 setup(name='Authda',
       packages=['Authda'],
       include_package_data=True,
@@ -47,5 +44,6 @@ setup(name='Authda',
                         'flask-sqlalchemy',
                         'flask-testing',
                         'slacker',
+                        'pyjwt',
                         'calmjs'])
 
