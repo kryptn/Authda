@@ -75,33 +75,10 @@ class User(db.Model):
     password = db.Column(db.String(72))
     email = db.Column(db.String(64))
 
-    session = db.relationship('Session', uselist=False, back_populates='user')
-
     def __init__(self, username, password, email):
         self.username = username
         self.password = bcrypt.hashpw(password, bcrypt.gensalt())
         self.email = email
 
-
-class Session(db.Model):
-    __tablename__ = 'session'
-    id = db.Column(db.String(32), primary_key=True, default = lambda: uuid.uuid1().hex)
-    active = db.Column(db.Boolean, default=True)
-    started = db.Column(db.DateTime(timezone=True), server_default=db.func.now())
-    updated = db.Column(db.DateTime(timezone=True), onupdate=db.func.now())
-
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    user = db.relationship('User', back_populates='session')
-
-    def __init__(self, user):
-        self.user = user
-
-    @staticmethod
-    def get_or_create(user):
-        result = Session.query.filter_by(user=user, active=True).first()
-        if result:
-            return result
-        
-        session = Session(user)
 
     

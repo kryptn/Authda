@@ -1,5 +1,6 @@
 from contextlib import contextmanager
 
+import jwt
 from flask import Flask, json, Response, current_app
 
 from Authda.slack import AuthBot, AdminSlacker
@@ -12,14 +13,17 @@ class ApiFlask(Flask):
 
 
 class ApiResult:
-    def __init__(self, value, status=200):
+    def __init__(self, value, status=200, payload=None):
         self.value = value
         self.status = status
+        self.payload = payload
 
     def to_response(self):
+        token = jwt.encode(self.payload, current_app.secret_key, algorithm='HS256')
         return Response(json.dumps(self.value),
                         status=self.status,
-                        mimetype='application/json')
+                        mimetype='application/json',
+                        headers={'Authorization': token})
 
 
 class ApiException(Exception):
